@@ -20,3 +20,4 @@ boton.addEventListener('click', (e) => {
         abrirFormularioGasto();
     }
 });
+export {cerrarFormularioGasto, abrirFormularioGasto};

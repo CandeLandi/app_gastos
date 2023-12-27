@@ -1,4 +1,8 @@
-const formulario = document.querySelector('#formulario.gasto, form');
+import { v4 as uuidv4 } from 'uuid';
+import { cerrarFormularioGasto } from './;eventoFormularioGasto';
+import cargarGastos from './cargarGastos';
+
+const formulario = document.querySelector('#formulario-gasto, form');
 const descripcion = formulario.descripcion;
 const precio = formulario.precio;
 
@@ -62,19 +66,28 @@ formulario.addEventListener('submit', (e) => {
     e.preventDefault();
     //Si ambos devuelven true, se ejecuta el codigo
     if (comprobarDescripcion() && comprobarPrecio()) {
-       
-       const gastosGuardados = JSON.parse(window.localStorage.getItem('gastos'));
-       console.log(gastosGuardados);
-       
-       
-       
-        /*  const nuevoGasto = {
-            id: '1',
+        const nuevoGasto = {
+            id: uuidv4(), // esta funcion le da un id unico 
             fecha: new Date(),
             descripcion: descripcion.value,
             precio: descripcion.precio
-        } */
-//En local storage no podemos guardar arreglos, solo cadenas de texto. con json los convertimos y a eso lo convertimos en un nuevo arreglo
-      /*   window.localStorage.setItem('gastos', JSON.stringify([{...nuevoGasto}])); */
+        }
+        const gastosGuardados = JSON.parse(window.localStorage.getItem('gastos'));
+        console.log(gastosGuardados);
+
+        //Comprobamos si hay gastos
+        if (gastosGuardados) {
+            //Creamos una nueva lista de gastos que incluya el nuevo
+            const nuevosGastos = [...gastosGuardados, nuevoGasto]
+            window.localStorage.setItem('gastos', JSON.stringify(nuevosGastos));
+        } else {
+            //Agregamos el primer gasto
+            window.localStorage.setItem('gastos', JSON.stringify([{ ...nuevoGasto }]));
+        }//En local storage no podemos guardar arreglos, solo cadenas de texto. con json los convertimos y a eso lo convertimos en un nuevo arreglo
+        descripcion.value = '';
+        precio.value = '';
+        cargarGastos();
+        cerrarFormularioGasto();
+
     }
 })
